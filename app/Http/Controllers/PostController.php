@@ -21,7 +21,7 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $data = auth()->user()->posts()->create($request->all());        
+        $data = auth()->user()->posts()->create($request->only('title', 'content'));        
 
         if ($data) {
             return redirect()->route('post.index');
@@ -30,21 +30,47 @@ class PostController extends Controller
 
     public function show($id)
     {
-        //
+        $data = Post::find($id);
+
+        if (!$data) {
+            return redirect()->route('post.index');    
+        }
+
+        return view('post.show', ['data' => $data]);
     }
 
     public function edit($id)
     {
-        //
+        $data = Post::find($id);
+
+        if (!$data) {
+            return redirect()->route('post.index');    
+        }
+
+        return view('post.edit', ['data' => $data]);
     }
 
     public function update(Request $request, $id)
     {
-        //
+        $params = $request->only('title', 'content');
+        $data = Post::find($id);
+
+        if (!$data) {
+            return redirect()->route('post.index');
+        }
+
+        $data->update($params);
+        return redirect()->route('post.show', $id);
     }
 
     public function destroy($id)
     {
-        //
+        $data = Post::find($id);
+
+        if ($data) {
+            // Post::destroy($id);
+            $data->delete();
+            return redirect()->route('post.index');
+        }
     }
 }
