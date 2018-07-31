@@ -18,4 +18,11 @@ Route::get('/', function () {
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::resource('post', 'PostController');
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('post', 'PostController');
+});
+
+// Route::middleware(['auth'])->group(function () {
+//     Route::resource('post', 'PostController');
+// });

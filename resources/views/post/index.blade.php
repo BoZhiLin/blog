@@ -15,7 +15,7 @@
                     <h5 class="card-title">
                         作者：{{ $data->user->name }}
                     </h5>
-                    <a href="" class="btn btn-secondary">查看文章</a>
+                    <a href="{{ route('post.show', $data->id) }}" class="btn btn-secondary">查看文章</a>
                 </div>
                 <div class="card-footer text-muted">
                     發文日期：{{ $data->created_at }}
