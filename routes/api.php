@@ -15,13 +15,13 @@ use Illuminate\Http\Request;
 
 Route::post('register', 'api\UserController@register');
 
-Route::group(['middleware' => ['api']], function ($router) {
-    Route::get('me', 'api\AuthController@me');
+Route::group(['prefix' => 'auth'], function ($router) {
+    Route::get('/', 'api\AuthController@me');
     Route::post('login', 'api\AuthController@login');
     Route::post('logout', 'api\AuthController@logout');
     Route::post('refresh', 'api\AuthController@refresh');
 });
 
-Route::group(['middleware' => ['jwt.auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
     Route::apiResource('post', 'api\PostController');
 });
