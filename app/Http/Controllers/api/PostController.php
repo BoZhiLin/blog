@@ -32,16 +32,30 @@ class PostController extends Controller
 
     public function show($id)
     {
-        //
+        if (! $data = $this->postRepo->find($id)) {
+            return response()->json(['status' => 1, 'message' => 'Post not found'], 404);
+        }
+
+        return response()->json(['status' => 0, 'post' => $data]);
     }
 
     public function update($id)
     {
-        //
+        $result = $this->postRepo->update($id, request()->only('title', 'content'));
+
+        if (!$result) {
+            return response()->json(['status' => 1]);
+        }
+
+        return response()->json(['status' => 0]);
     }
 
     public function destroy($id)
     {
-        //
+        if (! $result = $this->postRepo->delete($id)) {
+            return response()->json(['status' => 1]);
+        }
+
+        return response()->json(['status' => 0]);
     }
 }
