@@ -25,11 +25,7 @@ class PostRepository
     {
         $post = Post::find($id);
 
-        if (!$post) {
-            return false;
-        }
-
-        return $post->update($data);
+        return $post ? $post->update($data) : false;
     }
 
     public function delete($id)

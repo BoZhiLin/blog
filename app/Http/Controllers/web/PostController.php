@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\web;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\PostRepository;
 
@@ -26,6 +27,8 @@ class PostController extends Controller
 
     public function store()
     {
+        $this->validateParameters(request());
+        
         $data = $this->postRepo->create(request()->only('title', 'content'));       
 
         if ($data) {
@@ -57,6 +60,8 @@ class PostController extends Controller
 
     public function update($id)
     {
+        $this->validateParameters(request());
+
         $result = $this->postRepo->update($id, request()->only('title', 'content'));
 
         if (!$result) {
@@ -73,5 +78,20 @@ class PostController extends Controller
         if ($result) {
             return redirect()->route('post.index');
         }
+    }
+
+    private function validateParameters(Request $request)
+    {
+        $rules = [
+            'title' => 'required|string',
+            'content' => 'required|string'
+        ];
+
+        $messages = [
+            'title.required' => '請輸入標題',
+            'content.required' => '請輸入內容'
+        ];
+
+        $request->validate($rules, $messages);
     }
 }

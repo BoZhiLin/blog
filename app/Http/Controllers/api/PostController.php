@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Http\Requests\Post\Store;
+use App\Http\Requests\Post\Update;
 use App\Http\Controllers\Controller;
 use App\Repositories\PostRepository;
 
@@ -19,7 +21,7 @@ class PostController extends Controller
         return response()->json(['status' => 0, 'datas' => $this->postRepo->index()]);
     }
 
-    public function store()
+    public function store(Store $request)
     {
         $data = $this->postRepo->create(request()->only('title', 'content'));
 
@@ -32,19 +34,21 @@ class PostController extends Controller
 
     public function show($id)
     {
-        if (! $data = $this->postRepo->find($id)) {
+        $data = $this->postRepo->find($id);
+
+        if (!$data) {
             return response()->json(['status' => 1, 'message' => 'Post not found'], 404);
         }
 
         return response()->json(['status' => 0, 'post' => $data]);
     }
 
-    public function update($id)
+    public function update(Update $request, $id)
     {
         $result = $this->postRepo->update($id, request()->only('title', 'content'));
 
         if (!$result) {
-            return response()->json(['status' => 1]);
+            return response()->json(['status' => 1, 'message' => 'Post not found'], 404);
         }
 
         return response()->json(['status' => 0]);
@@ -52,8 +56,10 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        if (! $result = $this->postRepo->delete($id)) {
-            return response()->json(['status' => 1]);
+        $result = $this->postRepo->delete($id);
+
+        if (!$result) {
+            return response()->json(['status' => 1], 404);
         }
 
         return response()->json(['status' => 0]);
