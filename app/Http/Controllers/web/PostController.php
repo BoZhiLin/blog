@@ -1,17 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\web;
 
-use Illuminate\Http\Request;
-use App\Post;
+use App\Http\Controllers\Controller;
+use App\Repositories\PostRepository;
 
 class PostController extends Controller
 {
-    public function index()
+    protected $postRepo;
+
+    public function __construct(PostRepository $postRepo)
     {
-        $datas = Post::get();
-        
-        return view('post.index', ['datas' => $datas]);
+        $this->postRepo = $postRepo;
+    }
+
+    public function index()
+    {       
+        return view('post.index', ['datas' => $this->postRepo->index()]);
     }
 
     public function create()
@@ -19,9 +24,9 @@ class PostController extends Controller
         return view('post.create');
     }
 
-    public function store(Request $request)
+    public function store()
     {
-        $data = auth()->user()->posts()->create($request->only('title', 'content'));        
+        $data = $this->postRepo->create(request()->only('title', 'content'));       
 
         if ($data) {
             return redirect()->route('post.index');
@@ -30,7 +35,7 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $data = Post::find($id);
+        $data = $this->postRepo->find($id);
 
         if (!$data) {
             return redirect()->route('post.index');    
@@ -41,7 +46,7 @@ class PostController extends Controller
 
     public function edit($id)
     {
-        $data = Post::find($id);
+        $data = $this->postRepo->find($id);
 
         if (!$data) {
             return redirect()->route('post.index');    
@@ -50,26 +55,22 @@ class PostController extends Controller
         return view('post.edit', ['data' => $data]);
     }
 
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        $params = $request->only('title', 'content');
-        $data = Post::find($id);
+        $result = $this->postRepo->update($id, request()->only('title', 'content'));
 
-        if (!$data) {
+        if (!$result) {
             return redirect()->route('post.index');
         }
 
-        $data->update($params);
         return redirect()->route('post.show', $id);
     }
 
     public function destroy($id)
     {
-        $data = Post::find($id);
+        $result = $this->postRepo->delete($id);
 
-        if ($data) {
-            // Post::destroy($id);
-            $data->delete();
+        if ($result) {
             return redirect()->route('post.index');
         }
     }

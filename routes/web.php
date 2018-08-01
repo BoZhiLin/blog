@@ -17,12 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'web\HomeController@index')->name('home');
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::resource('post', 'PostController');
+    Route::resource('post', 'web\PostController');
 });
-
-// Route::middleware(['auth'])->group(function () {
-//     Route::resource('post', 'PostController');
-// });
