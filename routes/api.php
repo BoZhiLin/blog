@@ -22,6 +22,10 @@ Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('refresh', 'api\AuthController@refresh');
 });
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('post', 'api\PostController');
+
+    Route::group(['prefix' => 'post'], function () {
+        Route::post('{id}/comment/store', 'api\CommentController@store');
+    });    
 });
