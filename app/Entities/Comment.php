@@ -4,10 +4,10 @@ namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Comment extends Model
 {
     protected $fillable = [
-        'user_id', 'title', 'content',
+        'user_id', 'post_id', 'content',
     ];
 
     public function user()
@@ -15,8 +15,8 @@ class Post extends Model
         return $this->belongsTo('App\Entities\User');
     }
 
-    public function comments()
+    public function post()
     {
-        return $this->hasMany('App\Entities\Comment');
+        return $this->belongsTo('App\Entities\Post');
     }
 }

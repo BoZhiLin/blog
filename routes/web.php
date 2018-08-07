@@ -21,4 +21,8 @@ Route::get('/home', 'web\HomeController@index')->name('home');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('post', 'web\PostController');
+
+    Route::group(['prefix' => 'post'], function () {
+        Route::post('{id}/comment/store', 'web\CommentController@store')->name('comment.store');
+    });
 });

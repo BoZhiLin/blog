@@ -8,7 +8,7 @@ class PostRepository
 {
     public function find($id)
     {
-        return Post::find($id);
+        return Post::find($id)->load('comments.user');
     }
 
     public function index()

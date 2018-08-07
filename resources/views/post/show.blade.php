@@ -23,10 +23,24 @@
                 <form action="{{ route('post.destroy', $data->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    {{-- <input type="hidden" name="_method" value="delete"> --}}
                     <button class="btn btn-danger">刪除</button>
                 </form>
             </div>
         </div>
+        
+        <form action="{{ route('comment.store', $data->id) }}" method="POST">
+            @csrf
+            <div class="form-group col-md-4">
+                <label>留言</label>
+                <input type="text" class="form-control" name="content" placeholder="想說些什麼幹話呢？">
+                <input type="submit" class="btn btn-primary" value="留言">
+            </div>  
+        </form>
+
+        @foreach ($data->comments as $key => $comment)
+            <p>
+                {{ $comment->user->name }}說：{{ $comment->content }}
+            </p>
+        @endforeach
     </div>
 @endsection
