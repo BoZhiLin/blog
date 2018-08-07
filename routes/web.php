@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/home', 'web\HomeController@index')->name('home');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth:web']], function () {
     Route::resource('post', 'web\PostController');
 
     Route::group(['prefix' => 'post'], function () {
