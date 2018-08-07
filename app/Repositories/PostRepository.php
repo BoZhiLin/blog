@@ -6,14 +6,21 @@ use App\Entities\Post;
 
 class PostRepository
 {
+    public function index($title = null)
+    {
+        if ($title) {
+            return Post::where('title', 'like', '%'.$title.'%')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+        
+        return Post::orderBy('created_at', 'desc')
+            ->get();
+    }
+
     public function find($id)
     {
         return Post::find($id)->load('comments.user');
-    }
-
-    public function index()
-    {
-        return Post::get();
     }
 
     public function create(array $data)

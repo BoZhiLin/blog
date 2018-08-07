@@ -16,8 +16,8 @@ class PostController extends Controller
     }
 
     public function index()
-    {       
-        return view('post.index', ['datas' => $this->postRepo->index()]);
+    {
+        return view('post.index', ['datas' => $this->postRepo->index(request()->title)]);
     }
 
     public function create()
