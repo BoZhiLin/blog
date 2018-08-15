@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\web;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Comment\Store;
 use App\Repositories\CommentRepository;
 
 class CommentController extends Controller
@@ -15,9 +15,8 @@ class CommentController extends Controller
         $this->commentRepo = $commentRepo;
     }
 
-    public function store($id)
+    public function store(Store $request, $id)
     {
-        $this->validateParameters(request());
         $comment = request()->only('content');
         $comment['post_id'] = $id;
         $data = $this->commentRepo->create($comment);
@@ -27,16 +26,14 @@ class CommentController extends Controller
         }
     }
 
-    public function validateParameters(Request $request)
+    public function destroy($id)
     {
-        $rules = [
-            'content' => 'required|string',
-        ];
+        $result = $this->commentRepo->delete($id);
 
-        $messages = [
-            'content.required' => '請輸入留言內容',
-        ];
+        if ($result) {
+            return back();
+        }
 
-        $request->validate($rules, $messages);
+        return redirect()->route('post.index');;
     }
 }

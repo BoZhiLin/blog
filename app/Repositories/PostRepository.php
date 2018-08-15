@@ -30,13 +30,15 @@ class PostRepository
 
     public function update($id, array $data)
     {
-        $post = Post::find($id);
-
-        return $post ? $post->update($data) : false;
+        if ($post = auth()->user()->posts()->find($id)) {
+            return $post->update($data);
+        }
     }
 
     public function delete($id)
     {
-        return Post::destroy($id);
+        if ($post = auth()->user()->posts()->find($id)) {
+            return $post->delete();
+        }
     }
 }

@@ -17,15 +17,18 @@
             <div class="card-footer text-muted">
                 發文日期：{{ $data->created_at }}
             </div>
-            <div align="center">
-                <a href="{{ route('post.edit', $data->id) }}" class="btn btn-primary">編輯</a>
 
-                <form action="{{ route('post.destroy', $data->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-danger">刪除</button>
-                </form>
-            </div>
+            @if (auth()->id() === $data->user_id)
+                <div align="center">
+                    <a href="{{ route('post.edit', $data->id) }}" class="btn btn-primary">編輯</a>
+
+                    <form action="{{ route('post.destroy', $data->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger">刪除</button>
+                    </form>
+                </div>
+            @endif
         </div>
         
         <form action="{{ route('comment.store', $data->id) }}" method="POST">
@@ -40,6 +43,14 @@
         @foreach ($data->comments as $key => $comment)
             <p>
                 {{ $comment->user->name }}說：{{ $comment->content }}
+
+                @if (auth()->id() === $comment->user_id)
+                    <form action="{{ route('comment.destroy', $comment->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger">刪除</button>
+                    </form>
+                @endif
             </p>
         @endforeach
     </div>

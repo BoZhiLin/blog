@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\web;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Post\Store;
+use App\Http\Requests\Post\Update;
 use App\Http\Controllers\Controller;
 use App\Repositories\PostRepository;
 
@@ -25,10 +26,8 @@ class PostController extends Controller
         return view('post.create');
     }
 
-    public function store()
+    public function store(Store $request)
     {
-        $this->validateParameters(request());
-        
         $data = $this->postRepo->create(request()->only('title', 'content'));       
 
         if ($data) {
@@ -51,17 +50,17 @@ class PostController extends Controller
     {
         $data = $this->postRepo->find($id);
 
-        if (!$data) {
-            return redirect()->route('post.index');    
+        if ($data) {
+            if (auth()->id() === $data->user_id) {
+                return view('post.edit', ['data' => $data]);
+            }
         }
-
-        return view('post.edit', ['data' => $data]);
+        
+        return redirect()->route('post.index');            
     }
 
-    public function update($id)
+    public function update(Update $request, $id)
     {
-        $this->validateParameters(request());
-
         $result = $this->postRepo->update($id, request()->only('title', 'content'));
 
         if (!$result) {
@@ -78,20 +77,7 @@ class PostController extends Controller
         if ($result) {
             return redirect()->route('post.index');
         }
-    }
-
-    private function validateParameters(Request $request)
-    {
-        $rules = [
-            'title' => 'required|string',
-            'content' => 'required|string'
-        ];
-
-        $messages = [
-            'title.required' => '請輸入標題',
-            'content.required' => '請輸入內容'
-        ];
-
-        $request->validate($rules, $messages);
+        
+        return back();
     }
 }

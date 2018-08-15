@@ -21,8 +21,7 @@ Route::get('/home', 'web\HomeController@index')->name('home');
 
 Route::group(['middleware' => ['auth:web']], function () {
     Route::resource('post', 'web\PostController');
-
-    Route::group(['prefix' => 'post'], function () {
-        Route::post('{id}/comment/store', 'web\CommentController@store')->name('comment.store');
-    });
+    
+    Route::post('post/{id}/comment/store', 'web\CommentController@store')->name('comment.store');        
+    Route::delete('comment/{id}', 'web\CommentController@destroy')->name('comment.destroy');
 });

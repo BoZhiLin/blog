@@ -59,7 +59,7 @@ class PostController extends Controller
         $result = $this->postRepo->delete($id);
 
         if (!$result) {
-            return response()->json(['status' => 1], 404);
+            return response()->json(['status' => 1, 'message' => 'Post not found'], 404);
         }
 
         return response()->json(['status' => 0]);
