@@ -20,7 +20,8 @@ class PostRepository
 
     public function find($id)
     {
-        return Post::find($id)->load('comments.user');
+        return Post::with('comments.user')
+            ->find($id);
     }
 
     public function create(array $data)
